@@ -7,6 +7,7 @@ app = FastAPI()
 
 
 class Account(BaseModel):
+    id: int
     name: str
     balance: float
 
