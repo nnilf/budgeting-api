@@ -1,8 +1,14 @@
 from typing import Union
 
 from fastapi import FastAPI
+from pydantic import BaseModel
 
 app = FastAPI()
+
+
+class Account(BaseModel):
+    name: str
+    balance: float
 
 
 @app.get("/")
@@ -10,6 +16,6 @@ def read_root():
     return {"Hello": "World"}
 
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+@app.put("/accounts/{account_id}")
+def update_item(account_id: int, account: Account):
+    return {"item_name": account.id, "account_id": account_id}
