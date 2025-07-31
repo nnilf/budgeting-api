@@ -1,15 +1,7 @@
-from typing import Union
-
 from fastapi import FastAPI
-from pydantic import BaseModel
+from models import Account
 
 app = FastAPI()
-
-
-class Account(BaseModel):
-    id: int
-    name: str
-    balance: float
 
 
 @app.get("/")
