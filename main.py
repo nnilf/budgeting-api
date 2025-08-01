@@ -1,35 +1,23 @@
-from fastapi import FastAPI, Body, Query
-from models import Account
+from fastapi import FastAPI, Query, Cookie, Path, HTTPException
+from models import Transaction, Account, Authentication
 from enum import Enum
 from pydantic import BaseModel
 from typing import Annotated
 
 app = FastAPI()
 
-class Item(BaseModel):
-    name: str
-    description: Annotated[str | None, Query(max_length=50)] = None
-    price: float
-    tax: float | None = None
+items = []
 
 
-class Transaction(BaseModel):
-    SenderId : int
-    RecipientId : int
-    Amount : float
-    Category : Annotated[str, Body(max_length=50)] = 'Transfer'
-    Reference : Annotated[str | None, Body(max_length=50)] = None
+@app.post("/items")
+def add_item(item : str):
+    items.append(item)
+    return items
 
 
-@app.get("/items/")
-async def read_items(q: Annotated[str | None, Query(max_length=50)] = None):
-    results = {"items": [{"item_id": "Foo"}, {"item_id": "Bar"}]}
-    if q:
-        results.update({"q": q})
-    return results
-
-
-@app.get("/test/")
-async def get_test(test: str, q: str | None = None):
-    dictionary = {"query" : q, "test" : test}
-    return dictionary
+@app.get("/items/{item_id}")
+def get_item(item_id: Annotated[int, Path(gt=-1)]):
+    if item_id < len(items):
+        return items[item_id]
+    else:
+        raise HTTPException(status_code=404, detail="Item not found")
