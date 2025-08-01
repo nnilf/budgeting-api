@@ -3,13 +3,23 @@ from typing import Annotated
 from fastapi import Body, Cookie
 
 class Account(BaseModel):
-    AccountId : int
-    Balance : float
+    AccountId : int | None = None
+    Balance : float = 0.0
     Name : str
     Password : str
 
 
 class Transaction(BaseModel):
+    TransactionId : int
+    SenderId : int
+    RecipientId : int
+    Amount : Annotated[float, Body(gt=0.0)]
+    Category : Annotated[str, Body(max_length=50)] = 'Transfer'
+    Reference : Annotated[str | None, Body(max_length=50)] = None
+
+
+class TransactionResponse(BaseModel):
+    Successful : bool
     TransactionId : int
     SenderId : int
     RecipientId : int
